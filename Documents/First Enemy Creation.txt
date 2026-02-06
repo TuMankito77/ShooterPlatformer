@@ -1,0 +1,11 @@
+First Enemy Creation
+Create an enemy that does the following:
+- Patrols around areas.
+- On players sight he:
+- Targets a random player.
+- Follows him.
+- Once he is 200m away, he finds the best spot to attack.
+- Moves to the attack spot.
+- Once in the attack spot, dashes towards the player to punch them. 
+Nice to haves:
+- He can dodge bullets if the player plans on shooting at him. 
