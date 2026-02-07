@@ -9,11 +9,16 @@
 
 class ULyraAbilitySystemComponent;
 class UAbilitySystemComponent;
+class UAnimationSetUpComponent;
 
 UCLASS()
 class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAnimationSetUpComponent> AnimationSetUpComponent = nullptr;
 
 public:
 
@@ -31,5 +36,5 @@ protected:
 
 private:
 	TObjectPtr<ULyraAbilitySystemComponent> AbilitySystemComponent = nullptr;
-
+	virtual void SetStartingAnimationLayer();
 };

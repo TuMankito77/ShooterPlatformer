@@ -4,7 +4,7 @@
 #include "Enemy/BaseEnemy.h"
 
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
-//#include "GameplayAbilities/Public/AbilitySystemComponent.h"
+#include "AnimationSetUpComponent.h"
 
 ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -14,6 +14,8 @@ ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
+	AnimationSetUpComponent = ObjectInitializer.CreateDefaultSubobject<UAnimationSetUpComponent>(this, TEXT("AnimationSetUpComponent"));
+
 	SetNetUpdateFrequency(100.0f);
 }
 
@@ -22,6 +24,7 @@ void ABaseEnemy::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	check(AbilitySystemComponent);
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	SetStartingAnimationLayer();
 }
 
 void ABaseEnemy::BeginPlay()
@@ -50,4 +53,9 @@ ULyraAbilitySystemComponent* ABaseEnemy::GetLyraAbilitySystemComponent() const
 UAbilitySystemComponent* ABaseEnemy::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void ABaseEnemy::SetStartingAnimationLayer()
+{
+	AnimationSetUpComponent->UpdateLinkedAnimClassLayer(AnimationSetUpComponent->GetDefaultAnimLayer());
 }
