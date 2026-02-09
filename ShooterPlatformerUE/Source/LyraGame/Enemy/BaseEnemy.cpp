@@ -59,3 +59,8 @@ void ABaseEnemy::SetStartingAnimationLayer()
 {
 	AnimationSetUpComponent->UpdateLinkedAnimClassLayer(AnimationSetUpComponent->GetDefaultAnimLayer());
 }
+
+UBehaviorTree* ABaseEnemy::GetBehaviorTree()
+{
+	return BehaviorTree;
+}
