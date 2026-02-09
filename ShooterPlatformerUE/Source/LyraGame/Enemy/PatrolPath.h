@@ -29,4 +29,11 @@ public:
 	virtual void PostInitializeComponents() override;
 	int GetPatrolPointsLength();
 	FVector GetPatrolPointLocation(int Index);
+
+#if WITH_EDITOR
+
+	UFUNCTION(CallInEditor, Category = "Enemy Debug")
+	void ShowPatrolPointsInLevel();
+
+#endif
 };
