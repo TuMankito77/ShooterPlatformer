@@ -6,11 +6,13 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "BehaviorTree/BehaviorTree.h"
+
 #include "BaseEnemy.generated.h"
 
 class ULyraAbilitySystemComponent;
 class UAbilitySystemComponent;
 class UAnimationSetUpComponent;
+class APatrolPath;
 
 UCLASS()
 class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface
@@ -21,8 +23,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	TObjectPtr<UAnimationSetUpComponent> AnimationSetUpComponent = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category = "Enemy")
+	UPROPERTY(EditAnywhere, Category = "Enemy")
 	TObjectPtr<UBehaviorTree> BehaviorTree = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+	TObjectPtr<APatrolPath> PatrolPath = nullptr;
 
 public:
 
@@ -35,6 +40,7 @@ public:
 	virtual void PostInitializeComponents() override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UBehaviorTree* GetBehaviorTree();
+	APatrolPath* GetPatrolPath();
 
 protected:
 	virtual void BeginPlay() override;

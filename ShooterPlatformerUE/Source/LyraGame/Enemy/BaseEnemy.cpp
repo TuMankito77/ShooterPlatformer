@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AnimationSetUpComponent.h"
+#include "PatrolPath.h"
 
 ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -63,4 +64,9 @@ void ABaseEnemy::SetStartingAnimationLayer()
 UBehaviorTree* ABaseEnemy::GetBehaviorTree()
 {
 	return BehaviorTree;
+}
+
+APatrolPath* ABaseEnemy::GetPatrolPath()
+{
+	return PatrolPath;
 }
