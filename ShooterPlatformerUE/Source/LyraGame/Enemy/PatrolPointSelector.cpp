@@ -104,16 +104,15 @@ int UPatrolPointSelector::SelectWithIncreaseLoop(UBlackboardComponent& Blackboar
 int UPatrolPointSelector::SelectWithDecreaseLoop(UBlackboardComponent& BlackboardComp, APatrolPath& PatrolPath)
 {
 	bool bIsFirstIteration = BlackboardComp.GetValueAsBool(FName("IsFirstIteration"));
+	int PatrolLocationIndex = BlackboardComp.GetValueAsInt(FName("PatrolLocationIndex"));
 
 	if (bIsFirstIteration)
 	{
 		BlackboardComp.SetValueAsBool(FName("IsFirstIteration"), false);
-		return -(PatrolPath.PatrolPointLocations.Num() - 1);
+		return PatrolPath.PatrolPointLocations.Num() - 1;
 	}
 
-	int PatrolLocationIndex = BlackboardComp.GetValueAsInt(FName("PatrolLocationIndex"));
-	PatrolLocationIndex = PatrolPath.PatrolPointLocations.Num();
-	PatrolLocationIndex++;
+	PatrolLocationIndex = (PatrolLocationIndex - 1 + PatrolPath.PatrolPointLocations.Num()) % PatrolPath.PatrolPointLocations.Num();
 	return PatrolLocationIndex;
 }
 int UPatrolPointSelector::SelectWithRamdom(UBlackboardComponent& BlackboardComp, APatrolPath& PatrolPath)
