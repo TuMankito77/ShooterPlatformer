@@ -80,10 +80,12 @@ int UPatrolPointSelector::SelectWithIncreaseDecreaseOrder(UBlackboardComponent& 
 {
 	int PatrolLocationIndex = BlackboardComp.GetValueAsInt(FName("PatrolLocationIndex"));
 	
-
+	if (PatrolLocationIndex == PatrolPath.PatrolPointLocations.Num() - 1)
+	{
+		PatrolLocationIndex *= -1;
+	}
 	
-	PatrolLocationIndex--;
-	PatrolLocationIndex = PatrolLocationIndex % PatrolPath.PatrolPointLocations.Num();
+	PatrolLocationIndex++;
 	return PatrolLocationIndex;
 }
 int UPatrolPointSelector::SelectWithIncreaseLoop(UBlackboardComponent& BlackboardComp, APatrolPath& PatrolPath)
@@ -117,5 +119,5 @@ int UPatrolPointSelector::SelectWithDecreaseLoop(UBlackboardComponent& Blackboar
 }
 int UPatrolPointSelector::SelectWithRamdom(UBlackboardComponent& BlackboardComp, APatrolPath& PatrolPath)
 {
-	return FMath::RandRange((int)0, (int)PatrolPath.PatrolPointLocations.Num());
+	return FMath::RandRange((int)0, (int)(PatrolPath.PatrolPointLocations.Num() - 1));
 }
