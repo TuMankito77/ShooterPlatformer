@@ -7,14 +7,21 @@
 #include "AIControllerBaseEnemy.generated.h"
 
 class ABaseEnemy;
+class UAIPerceptionComponent;
 
 UCLASS()
 class LYRAGAME_API AAIControllerBaseEnemy : public ADetourCrowdAIController
 {
 	GENERATED_BODY()
+
+public:
+	AAIControllerBaseEnemy(const FObjectInitializer& ObjectInitializer);
 	
 protected:
-	TObjectPtr<ABaseEnemy> BaseEnemy;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent = nullptr;
+	
+	TObjectPtr<ABaseEnemy> BaseEnemy = nullptr;
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
