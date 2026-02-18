@@ -25,4 +25,8 @@ protected:
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+
+private:
+	UFUNCTION()
+	void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 };

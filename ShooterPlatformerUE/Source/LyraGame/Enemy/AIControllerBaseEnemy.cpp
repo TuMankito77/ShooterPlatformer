@@ -6,6 +6,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 AAIControllerBaseEnemy::AAIControllerBaseEnemy(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
@@ -43,5 +44,30 @@ void AAIControllerBaseEnemy::OnPossess(APawn* InPawn)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s - %s - %s: Does not have a valid behavior tree assigned. Hense, it will do nothing!"), *BaseEnemy->GetName(), *GetName(), ANSI_TO_TCHAR(__FUNCTION__));
+	}
+
+	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerBaseEnemy::OnPerceptionUpdated);
+}
+
+void AAIControllerBaseEnemy::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
+{
+	for (AActor* UpdatedActor : UpdatedActors)
+	{
+		UE_LOG(LogTemp, Display, TEXT("%s - %s - %s: %s!"), *BaseEnemy->GetName(), *GetName(), ANSI_TO_TCHAR(__FUNCTION__), *(UpdatedActor->GetName()));
+	}
+
+	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
+
+	if (!BlackboardComponent)
+	{
+		return;
+	}
+
+	AActor* AttackTarget = Cast<AActor>(BlackboardComponent->GetValueAsObject(FName("AttackTarget")));
+
+	if (!IsValid(AttackTarget))
+	{
+		AActor* NewAttackTarget = UpdatedActors[FMath::RandRange((int)0, (int)(UpdatedActors.Num() - 1))];
+		BlackboardComponent->SetValueAsObject(FName("AttackTarget"), NewAttackTarget);
 	}
 }
