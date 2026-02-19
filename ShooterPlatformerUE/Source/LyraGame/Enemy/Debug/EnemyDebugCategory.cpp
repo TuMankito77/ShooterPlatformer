@@ -32,7 +32,9 @@ void FEnemyDebugCategory::CollectData(APlayerController* Owner, AActor* DebugAct
 		return;
 	}
 
-	TargetLocation = BlackboardComponent->GetValueAsVector("TargetLocation");
+	PatrolPointLocation = BlackboardComponent->GetValueAsVector("TargetLocation");
+	AttackLocation = BlackboardComponent->GetValueAsVector("AttackLocation");
+	AttackTarget = Cast<AActor>(BlackboardComponent->GetValueAsObject("AttackTarget"));
 	bHasMoveTarget = true;
 }
 
@@ -40,8 +42,16 @@ void FEnemyDebugCategory::DrawData(APlayerController* Owner, FGameplayDebuggerCa
 {
 	if (bHasMoveTarget)
 	{
-		DrawDebugSphere(Owner->GetWorld(), TargetLocation, 50.0f, 12, FColor::Blue, false, 1);
-		CanvasContext.Printf(TEXT("Current Target Location: %s"), *TargetLocation.ToString());
+		if (IsValid(AttackTarget))
+		{
+			DrawDebugSphere(Owner->GetWorld(), AttackLocation, DEBUG_SPHERE_RADIUS, DEBUG_SPHERE_SEGMENTS, FColor::Green, false, 0);
+			DrawDebugSphere(Owner->GetWorld(), AttackTarget->GetActorLocation(), DEBUG_SPHERE_RADIUS, DEBUG_SPHERE_SEGMENTS, FColor::Red, false, 0);
+		}
+		else
+		{
+			DrawDebugSphere(Owner->GetWorld(), PatrolPointLocation, DEBUG_SPHERE_RADIUS, DEBUG_SPHERE_SEGMENTS, FColor::Blue, false, 0);
+			CanvasContext.Printf(TEXT("Current Target Location: %s"), *PatrolPointLocation.ToString());
+		}
 	}
 	else
 	{
