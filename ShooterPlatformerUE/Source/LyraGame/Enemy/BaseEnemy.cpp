@@ -2,7 +2,7 @@
 
 
 #include "Enemy/BaseEnemy.h"
-
+#include "LyraGame/AbilitySystem/LyraAbilitySet.h"
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AnimationSetUpComponent.h"
 #include "PatrolPath.h"
@@ -26,6 +26,12 @@ void ABaseEnemy::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	check(AbilitySystemComponent);
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	if (IsValid(AbilitySet))
+	{
+		AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
+	}
+
 	SetStartingAnimationLayer();
 }
 
