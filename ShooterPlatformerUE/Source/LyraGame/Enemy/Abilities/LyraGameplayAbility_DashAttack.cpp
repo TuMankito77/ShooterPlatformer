@@ -26,6 +26,7 @@ void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpec
 	);
 
 	RootMotionTask->OnFinish.AddDynamic(this, &ULyraGameplayAbility_DashAttack::OnRootMotionTaskFinished);
+	RootMotionTask->ReadyForActivation();
 }
 
 void ULyraGameplayAbility_DashAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -34,6 +35,8 @@ void ULyraGameplayAbility_DashAttack::EndAbility(const FGameplayAbilitySpecHandl
 	{
 		RootMotionTask->EndTask();
 	}
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void ULyraGameplayAbility_DashAttack::OnRootMotionTaskFinished()
