@@ -1,11 +1,20 @@
 First Enemy Creation
 Create an enemy that does the following:
-- Patrols around areas.
+- Patrols around areas. 
+	- Verify the that patrol point locations are the correct ones with a debug sphere ;)
+	- Check that the behavior tree is assigned and runs on the enemy. 
+	- Use the new patrol points class to make the enemy go through each point. 
+	- Fix the bugs with the increase decrease and the decrease. 
+	- Check if we should hook to the debug system so that when enabled, we see what patrol location the enemy is going to. 
 - On players sight he:
 - Targets a random player.
 - Follows him.
 - Once he is 200m away, he finds the best spot to attack.
 - Moves to the attack spot.
 - Once in the attack spot, dashes towards the player to punch them. 
+	- Create a task that executes abilities based on a gameplay tag assigned. 
+- If a player shoots at him, a bar showing his stun endurance will fill.
+- If the stun endurance is full, the enemy enters in a stunned state.
+- The player can attack him only with direct attacks during this phase. 
 Nice to haves:
 - He can dodge bullets if the player plans on shooting at him. 
