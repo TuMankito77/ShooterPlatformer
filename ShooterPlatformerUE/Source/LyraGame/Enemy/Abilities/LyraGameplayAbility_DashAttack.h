@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/LyraGameplayAbility.h"
+#include "GameplayTagcontainer.h"
 #include "LyraGameplayAbility_DashAttack.generated.h"
 
 class UAbilityTask_ApplyRootMotionConstantForce;
@@ -24,6 +25,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAbilityTask_ApplyRootMotionConstantForce> RootMotionTask = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag AbilityFinishedTag = FGameplayTag();
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
