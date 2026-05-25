@@ -45,20 +45,5 @@ void ULyraGameplayAbility_DashAttack::OnRootMotionTaskFinished()
 {
 	const bool bReplicateEndAbility = true;
 	const bool bWasCanceled = false;
-	AActor* OwningActor = GetAvatarActorFromActorInfo();
-
-	if (!IsValid(OwningActor))
-	{
-		return;
-	}
-
-	ABaseEnemy* BaseEnemy = Cast<ABaseEnemy>(OwningActor);
-
-	if (!IsValid(BaseEnemy))
-	{
-		return;
-	}
-
-	BaseEnemy->OnAbilityExecutionFinished.Broadcast();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCanceled);
 }

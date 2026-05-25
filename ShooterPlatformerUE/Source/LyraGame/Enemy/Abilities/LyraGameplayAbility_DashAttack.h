@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Abilities/LyraGameplayAbility.h"
+#include "LyraGameplayAbility_BTTAbility.h"
 #include "GameplayTagcontainer.h"
 #include "LyraGameplayAbility_DashAttack.generated.h"
 
@@ -12,7 +12,7 @@ class UAbilityTask_ApplyRootMotionConstantForce;
  * 
  */
 UCLASS()
-class LYRAGAME_API ULyraGameplayAbility_DashAttack : public ULyraGameplayAbility
+class LYRAGAME_API ULyraGameplayAbility_DashAttack : public ULyraGameplayAbility_BTTAbility
 {
 	GENERATED_BODY()
 	
