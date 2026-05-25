@@ -5,7 +5,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Enemy/AIControllerBaseEnemy.h"
 #include "Enemy/BaseEnemy.h"
-#include "Abilities/Async/AbilityAsync_WaitGameplayEvent.h"
 
 UBTTaskTriggerAbility::UBTTaskTriggerAbility()
 {
@@ -17,27 +16,36 @@ EBTNodeResult::Type UBTTaskTriggerAbility::ExecuteTask(UBehaviorTreeComponent& O
 	CachedBehaviorTreeComp = OwnerComp;
 
 	AAIControllerBaseEnemy* AICBaseEnemy = Cast<AAIControllerBaseEnemy>(OwnerComp.GetOwner());
-	ABaseEnemy* BaseEnemy = Cast<ABaseEnemy>(AICBaseEnemy->GetPawn());
-	
-	UAbilityAsync_WaitGameplayEvent* EventTask = UAbilityAsync_WaitGameplayEvent::WaitGameplayEventToActor
-	(
-		BaseEnemy,
-		AbilityFinishedTag,
-		true,
-		true
-	);
 
-	EventTask->EventReceived.AddDynamic(this, &UBTTaskTriggerAbility::OnAbilityFinished);
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(BaseEnemy, AbilityToTrigger, FGameplayEventData());
+	if (!IsValid(AICBaseEnemy))
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	CachedBaseEnemy = Cast<ABaseEnemy>(AICBaseEnemy->GetPawn());
+
+	if (!IsValid(CachedBaseEnemy))
+	{
+		return EBTNodeResult::Failed;
+	}
+
+	CachedBaseEnemy->OnAbilityExecutionFinished.AddDynamic(this, &UBTTaskTriggerAbility::OnAbilityFinished);
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(CachedBaseEnemy, AbilityToTrigger, FGameplayEventData());
 	return EBTNodeResult::InProgress;
 }
 
-void UBTTaskTriggerAbility::OnAbilityFinished(FGameplayEventData Payload)
+void UBTTaskTriggerAbility::OnAbilityFinished()
 {
 	if (!IsValid(CachedBehaviorTreeComp))
 	{
 		return;
 	}
+	
+	if (!IsValid(CachedBaseEnemy))
+	{
+		return;
+	}
 
+	CachedBaseEnemy->OnAbilityExecutionFinished.RemoveDynamic(this, &UBTTaskTriggerAbility::OnAbilityFinished);
 	FinishLatentTask(*CachedBehaviorTreeComp, EBTNodeResult::Succeeded);
 }

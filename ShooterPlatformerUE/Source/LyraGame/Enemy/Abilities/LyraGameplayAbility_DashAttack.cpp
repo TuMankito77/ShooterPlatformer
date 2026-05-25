@@ -6,6 +6,7 @@
 #include "GameFramework/RootMotionSource.h"
 #include "LyraGame/AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Enemy/BaseEnemy.h"
 
 void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -45,6 +46,19 @@ void ULyraGameplayAbility_DashAttack::OnRootMotionTaskFinished()
 	const bool bReplicateEndAbility = true;
 	const bool bWasCanceled = false;
 	AActor* OwningActor = GetAvatarActorFromActorInfo();
+
+	if (!IsValid(OwningActor))
+	{
+		return;
+	}
+
+	ABaseEnemy* BaseEnemy = Cast<ABaseEnemy>(OwningActor);
+
+	if (!IsValid(BaseEnemy))
+	{
+		return;
+	}
+
+	BaseEnemy->OnAbilityExecutionFinished.Broadcast();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCanceled);
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(OwningActor, AbilityFinishedTag, FGameplayEventData());
 }

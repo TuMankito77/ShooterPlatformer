@@ -19,6 +19,8 @@ class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterfac
 {
 	GENERATED_BODY()
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAbilityExecutionFinished);
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	TObjectPtr<UAnimationSetUpComponent> AnimationSetUpComponent = nullptr;
@@ -41,6 +43,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UBehaviorTree* GetBehaviorTree();
 	APatrolPath* GetPatrolPath();
+	FOnAbilityExecutionFinished OnAbilityExecutionFinished;
 
 protected:
 	virtual void BeginPlay() override;
