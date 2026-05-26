@@ -8,6 +8,7 @@
 #include "LyraGameplayAbility_DashAttack.generated.h"
 
 class UAbilityTask_ApplyRootMotionConstantForce;
+class UAbilityTask_PlayMontageAndWait;
 /**
  * 
  */
@@ -23,8 +24,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	float Duration = 3.0f;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> MontageToPlay = nullptr;
+
 	UPROPERTY()
 	TObjectPtr<UAbilityTask_ApplyRootMotionConstantForce> RootMotionTask = nullptr;
+
+	UPROPERTY()
+	TObjectPtr< UAbilityTask_PlayMontageAndWait> PlayMontageTask = nullptr;
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

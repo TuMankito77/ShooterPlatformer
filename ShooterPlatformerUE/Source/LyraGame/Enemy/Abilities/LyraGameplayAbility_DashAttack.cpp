@@ -3,6 +3,7 @@
 
 #include "Enemy/Abilities/LyraGameplayAbility_DashAttack.h"
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "GameFramework/RootMotionSource.h"
 #include "LyraGame/AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
@@ -11,6 +12,22 @@
 void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	UE_LOG(LogTemp, Display, TEXT("Excecuting Ability!"));
+
+	float MontagePlayRate = MontageToPlay->GetPlayLength() / Duration;
+
+	PlayMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
+	(
+		this,
+		FName("DashAttackPlayMontage"),
+		MontageToPlay,
+		MontagePlayRate,
+		NAME_None,
+		true,
+		1.0F,
+		0.0f
+	);
+
+	PlayMontageTask->ReadyForActivation();
 
 	RootMotionTask = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce
 	(
@@ -33,6 +50,11 @@ void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpec
 
 void ULyraGameplayAbility_DashAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	if (IsValid(PlayMontageTask))
+	{
+		PlayMontageTask->EndTask();
+	}
+
 	if(IsValid(RootMotionTask))
 	{
 		RootMotionTask->EndTask();
