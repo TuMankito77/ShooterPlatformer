@@ -36,6 +36,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
 	ULyraAbilitySystemComponent* GetLyraAbilitySystemComponent() const;
 
+	FOnAbilityExecutionFinished OnAbilityExecutionFinished;
+	
 	ABaseEnemy(const FObjectInitializer& ObejectInitializer);
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -43,7 +45,6 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UBehaviorTree* GetBehaviorTree();
 	APatrolPath* GetPatrolPath();
-	FOnAbilityExecutionFinished OnAbilityExecutionFinished;
 
 protected:
 	virtual void BeginPlay() override;

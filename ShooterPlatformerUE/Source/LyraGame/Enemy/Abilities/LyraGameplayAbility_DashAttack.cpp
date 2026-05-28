@@ -4,10 +4,15 @@
 #include "Enemy/Abilities/LyraGameplayAbility_DashAttack.h"
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionConstantForce.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Enemy/Abilities/AbilityTask_Tick.h"
 #include "GameFramework/RootMotionSource.h"
 #include "LyraGame/AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Enemy/BaseEnemy.h"
+#include "Components/CapsuleComponent.h"
+#include "Engine/World.h"
+#include "CollisionQueryParams.h"
+#include "WorldCollision.h"
 
 void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -28,6 +33,10 @@ void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpec
 	);
 
 	PlayMontageTask->ReadyForActivation();
+
+	TickTask = UAbilityTask_Tick::CreateTickingAbilityTask(this);
+	TickTask->OnTaskTick.AddDynamic(this, &ULyraGameplayAbility_DashAttack::CheckForActorsToDamage);
+	TickTask->ReadyForActivation();
 
 	RootMotionTask = UAbilityTask_ApplyRootMotionConstantForce::ApplyRootMotionConstantForce
 	(
@@ -55,6 +64,11 @@ void ULyraGameplayAbility_DashAttack::EndAbility(const FGameplayAbilitySpecHandl
 		PlayMontageTask->EndTask();
 	}
 
+	if (IsValid(TickTask))
+	{
+		TickTask->EndTask();
+	}
+
 	if(IsValid(RootMotionTask))
 	{
 		RootMotionTask->EndTask();
@@ -68,4 +82,41 @@ void ULyraGameplayAbility_DashAttack::OnRootMotionTaskFinished()
 	const bool bReplicateEndAbility = true;
 	const bool bWasCanceled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCanceled);
+}
+
+void ULyraGameplayAbility_DashAttack::CheckForActorsToDamage(float DeltaTime)
+{
+	AActor* OwningActor = GetAvatarActorFromActorInfo();
+
+	if (!IsValid(OwningActor))
+	{
+		return;
+	}
+
+	UCapsuleComponent* CapsuleComponent = OwningActor->GetComponentByClass<UCapsuleComponent>();
+	
+	if (CapsuleComponent == nullptr)
+	{
+		return;
+	}
+	
+	TArray<FHitResult> HitResults;
+	FVector ActorForwardVector = OwningActor->GetActorForwardVector();
+	FVector Start = OwningActor->GetActorLocation() + ActorForwardVector * CapsuleComponent->GetScaledCapsuleRadius();
+	FVector End = Start + ActorForwardVector * DashDamageDistance;
+	FCollisionShape CapsuleShape = FCollisionShape::MakeCapsule(CapsuleComponent->GetScaledCapsuleRadius(), CapsuleComponent->GetScaledCapsuleHalfHeight());
+	FCollisionObjectQueryParams CollisionObjectQueryParams;
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(OwningActor);
+	bool WasHitDetected = GetWorld()->SweepMultiByObjectType(HitResults, Start, End, FQuat::Identity, CollisionObjectQueryParams, CapsuleShape, CollisionQueryParams);
+
+	if (WasHitDetected)
+	{
+		for (FHitResult HitResult : HitResults)
+		{
+			AActor* HitActor = HitResult.GetActor();
+			UE_LOG(LogTemp, Warning, TEXT("Hit actor: %s"), *(HitActor->GetName()));
+		}
+	}
 }

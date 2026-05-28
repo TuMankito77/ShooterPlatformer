@@ -9,6 +9,7 @@
 
 class UAbilityTask_ApplyRootMotionConstantForce;
 class UAbilityTask_PlayMontageAndWait;
+class UAbilityTask_Tick;
 /**
  * 
  */
@@ -24,6 +25,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float Duration = 3.0f;
 
+	UPROPERTY(EditAnywhere, meta = (ClampMin = "0"))
+	float DashDamageDistance = 200.0f;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> MontageToPlay = nullptr;
 
@@ -31,7 +35,10 @@ private:
 	TObjectPtr<UAbilityTask_ApplyRootMotionConstantForce> RootMotionTask = nullptr;
 
 	UPROPERTY()
-	TObjectPtr< UAbilityTask_PlayMontageAndWait> PlayMontageTask = nullptr;
+	TObjectPtr<UAbilityTask_PlayMontageAndWait> PlayMontageTask = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UAbilityTask_Tick> TickTask = nullptr;
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
@@ -40,4 +47,6 @@ protected:
 private:
 	UFUNCTION()
 	void OnRootMotionTaskFinished();
+
+	void CheckForActorsToDamage(float DeltaTime);
 };
