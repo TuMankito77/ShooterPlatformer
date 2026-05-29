@@ -66,6 +66,7 @@ void ULyraGameplayAbility_DashAttack::EndAbility(const FGameplayAbilitySpecHandl
 
 	if (IsValid(TickTask))
 	{
+		TickTask->OnTaskTick.RemoveDynamic(this, &ULyraGameplayAbility_DashAttack::CheckForActorsToDamage);
 		TickTask->EndTask();
 	}
 
@@ -79,6 +80,7 @@ void ULyraGameplayAbility_DashAttack::EndAbility(const FGameplayAbilitySpecHandl
 
 void ULyraGameplayAbility_DashAttack::OnRootMotionTaskFinished()
 {
+	RootMotionTask->OnFinish.RemoveDynamic(this, &ULyraGameplayAbility_DashAttack::OnRootMotionTaskFinished);
 	const bool bReplicateEndAbility = true;
 	const bool bWasCanceled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCanceled);

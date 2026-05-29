@@ -48,5 +48,6 @@ private:
 	UFUNCTION()
 	void OnRootMotionTaskFinished();
 
+	UFUNCTION()
 	void CheckForActorsToDamage(float DeltaTime);
 };
