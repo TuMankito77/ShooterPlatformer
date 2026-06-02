@@ -51,11 +51,6 @@ void AAIControllerBaseEnemy::OnPossess(APawn* InPawn)
 
 void AAIControllerBaseEnemy::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-	for (AActor* UpdatedActor : UpdatedActors)
-	{
-		UE_LOG(LogTemp, Display, TEXT("%s - %s - %s: %s!"), *BaseEnemy->GetName(), *GetName(), ANSI_TO_TCHAR(__FUNCTION__), *(UpdatedActor->GetName()));
-	}
-
 	UBlackboardComponent* BlackboardComponent = GetBlackboardComponent();
 
 	if (!BlackboardComponent)
