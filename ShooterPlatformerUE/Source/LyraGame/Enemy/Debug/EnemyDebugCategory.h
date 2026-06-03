@@ -17,6 +17,8 @@ public:
 	FEnemyDebugCategory();
 	virtual void CollectData(APlayerController* Owner, AActor* DebugActor) override;
 	virtual void DrawData(APlayerController* Owner, FGameplayDebuggerCanvasContext& CanvasContext) override;
+	virtual void OnGameplayDebuggerDeactivated() override;
+	static TWeakObjectPtr<AActor> CurrentEnemyDebugged;
 	static TSharedRef<FGameplayDebuggerCategory> MakeInstance();
 
 protected:

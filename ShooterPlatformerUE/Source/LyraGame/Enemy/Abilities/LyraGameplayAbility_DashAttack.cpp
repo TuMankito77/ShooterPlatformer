@@ -16,8 +16,6 @@
 
 void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	UE_LOG(LogTemp, Display, TEXT("Excecuting Ability!"));
-
 	float MontagePlayRate = MontageToPlay->GetPlayLength() / Duration;
 
 	PlayMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy
@@ -75,6 +73,7 @@ void ULyraGameplayAbility_DashAttack::EndAbility(const FGameplayAbilitySpecHandl
 		RootMotionTask->EndTask();
 	}
 
+	AlreadyDamagedActors.Empty();
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -111,6 +110,7 @@ void ULyraGameplayAbility_DashAttack::CheckForActorsToDamage(float DeltaTime)
 	CollisionObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(OwningActor);
+	CollisionQueryParams.AddIgnoredActors(AlreadyDamagedActors);
 	bool WasHitDetected = GetWorld()->SweepMultiByObjectType(HitResults, Start, End, FQuat::Identity, CollisionObjectQueryParams, CapsuleShape, CollisionQueryParams);
 
 	if (WasHitDetected)
@@ -118,7 +118,32 @@ void ULyraGameplayAbility_DashAttack::CheckForActorsToDamage(float DeltaTime)
 		for (FHitResult HitResult : HitResults)
 		{
 			AActor* HitActor = HitResult.GetActor();
-			UE_LOG(LogTemp, Warning, TEXT("Hit actor: %s"), *(HitActor->GetName()));
+
+			if (AlreadyDamagedActors.Contains(HitActor))
+			{
+				continue;
+			}
+
+			AlreadyDamagedActors.Add(HitActor);
+
+			if (IsDebugginEnabled())
+			{
+				UE_LOG(LogTemp, Display, TEXT("Hit actor: %s"), *(HitActor->GetName()));
+			}
+		}
+
+		if (IsDebugginEnabled())
+		{
+			DrawDebugCapsule(GetWorld(), Start, CapsuleComponent->GetScaledCapsuleHalfHeight(), CapsuleComponent->GetScaledCapsuleRadius(), FQuat::Identity, ActorsDamagedColor, false, DebugCapsuleVisivilityDuration);
+			DrawDebugCapsule(GetWorld(), End, CapsuleComponent->GetScaledCapsuleHalfHeight(), CapsuleComponent->GetScaledCapsuleRadius(), FQuat::Identity, ActorsDamagedColor, false, DebugCapsuleVisivilityDuration);
+		}
+	}
+	else
+	{
+		if (IsDebugginEnabled())
+		{
+			DrawDebugCapsule(GetWorld(), Start, CapsuleComponent->GetScaledCapsuleHalfHeight(), CapsuleComponent->GetScaledCapsuleRadius(), FQuat::Identity, NoActorDamagedColor, false, DebugCapsuleVisivilityDuration);
+			DrawDebugCapsule(GetWorld(), End, CapsuleComponent->GetScaledCapsuleHalfHeight(), CapsuleComponent->GetScaledCapsuleRadius(), FQuat::Identity, NoActorDamagedColor, false, DebugCapsuleVisivilityDuration);
 		}
 	}
 }

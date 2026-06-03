@@ -3,6 +3,7 @@
 
 #include "Enemy/Abilities/LyraGameplayAbility_BTTAbility.h"
 #include "Enemy/BaseEnemy.h"
+#include "Enemy/Debug/EnemyDebugCategory.h"
 
 ULyraGameplayAbility_BTTAbility::ULyraGameplayAbility_BTTAbility()
 {
@@ -26,4 +27,10 @@ void ULyraGameplayAbility_BTTAbility::EndAbility(const FGameplayAbilitySpecHandl
 	}
 	
 	BaseEnemy->OnAbilityExecutionFinished.Broadcast();
+}
+
+bool ULyraGameplayAbility_BTTAbility::IsDebugginEnabled()
+{
+	AActor* OwningActor = GetAvatarActorFromActorInfo();
+	return OwningActor == FEnemyDebugCategory::CurrentEnemyDebugged;
 }

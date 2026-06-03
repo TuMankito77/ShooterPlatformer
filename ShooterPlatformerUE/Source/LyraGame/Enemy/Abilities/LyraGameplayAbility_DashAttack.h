@@ -31,6 +31,15 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> MontageToPlay = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Debugging")
+	FColor NoActorDamagedColor = FColor::Red;
+
+	UPROPERTY(EditAnywhere, Category = "Debugging")
+	FColor ActorsDamagedColor = FColor::Green;
+
+	UPROPERTY(EditAnywhere, Category = "Debugging")
+	float DebugCapsuleVisivilityDuration = 0.2f;
+
 	UPROPERTY()
 	TObjectPtr<UAbilityTask_ApplyRootMotionConstantForce> RootMotionTask = nullptr;
 
@@ -39,6 +48,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAbilityTask_Tick> TickTask = nullptr;
+
+	TArray<TObjectPtr<AActor>> AlreadyDamagedActors;
 
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

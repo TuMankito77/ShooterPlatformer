@@ -18,7 +18,7 @@ class FLyraGameModule : public FDefaultGameModuleImpl
 		
 		Debugger.RegisterCategory
 		(
-			"Enemy Movement",
+			"Custom Enemy Debug",
 			IGameplayDebugger::FOnGetCategory::CreateStatic(&FEnemyDebugCategory::MakeInstance),
 			EGameplayDebuggerCategoryState::EnabledInGameAndSimulate
 		);

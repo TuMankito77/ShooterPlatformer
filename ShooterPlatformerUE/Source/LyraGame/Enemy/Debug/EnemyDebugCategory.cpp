@@ -1,8 +1,12 @@
 // Copyright GameBox Studios All Rights Reserved.
+
 #include "Enemy/Debug/EnemyDebugCategory.h"
 #include "AIController.h"
 #include "GameFramework/Character.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Perception/AIPerceptionComponent.h"
+
+TWeakObjectPtr<AActor> FEnemyDebugCategory::CurrentEnemyDebugged = nullptr;
 
 FEnemyDebugCategory::FEnemyDebugCategory()
 {
@@ -11,6 +15,8 @@ FEnemyDebugCategory::FEnemyDebugCategory()
 
 void FEnemyDebugCategory::CollectData(APlayerController* Owner, AActor* DebugActor)
 {
+	CurrentEnemyDebugged = DebugActor;
+
 	bHasMoveTarget = false;
 
 	if (!IsValid(DebugActor))
@@ -62,4 +68,9 @@ void FEnemyDebugCategory::DrawData(APlayerController* Owner, FGameplayDebuggerCa
 TSharedRef<FGameplayDebuggerCategory> FEnemyDebugCategory::MakeInstance()
 {
 	return MakeShareable(new FEnemyDebugCategory());
+}
+
+void FEnemyDebugCategory::OnGameplayDebuggerDeactivated()
+{
+	CurrentEnemyDebugged = nullptr;
 }
