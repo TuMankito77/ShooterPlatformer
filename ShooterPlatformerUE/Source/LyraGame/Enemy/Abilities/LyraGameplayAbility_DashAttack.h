@@ -31,6 +31,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> MontageToPlay = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> DamageGameplayEffectClass = nullptr;
+
 	UPROPERTY(EditAnywhere, Category = "Debugging")
 	FColor NoActorDamagedColor = FColor::Red;
 

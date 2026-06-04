@@ -13,6 +13,7 @@
 #include "Engine/World.h"
 #include "CollisionQueryParams.h"
 #include "WorldCollision.h"
+#include "GameplayAbilities/Public/AbilitySystemGlobals.h"
 
 void ULyraGameplayAbility_DashAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -100,6 +101,13 @@ void ULyraGameplayAbility_DashAttack::CheckForActorsToDamage(float DeltaTime)
 	{
 		return;
 	}
+
+	ULyraAbilitySystemComponent* LASComponent = GetLyraAbilitySystemComponentFromActorInfo();
+
+	if (LASComponent == nullptr)
+	{
+		return;
+	}
 	
 	TArray<FHitResult> HitResults;
 	FVector ActorForwardVector = OwningActor->GetActorForwardVector();
@@ -124,6 +132,16 @@ void ULyraGameplayAbility_DashAttack::CheckForActorsToDamage(float DeltaTime)
 				continue;
 			}
 
+			UAbilitySystemComponent* HitActorAbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(HitActor);
+
+			if (!IsValid(HitActorAbilitySystemComponent))
+			{
+				return;
+			}
+
+			FGameplayEffectContextHandle GameplayEffectContext = LASComponent->MakeEffectContext();
+			UGameplayEffect* DamageGameplayEffect = DamageGameplayEffectClass->GetDefaultObject<UGameplayEffect>();
+			LASComponent->ApplyGameplayEffectToTarget(DamageGameplayEffect, HitActorAbilitySystemComponent, 1.0, GameplayEffectContext);
 			AlreadyDamagedActors.Add(HitActor);
 
 			if (IsDebugginEnabled())
