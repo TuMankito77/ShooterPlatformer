@@ -13,6 +13,7 @@ class UAbilitySystemComponent;
 class UAnimationSetUpComponent;
 class APatrolPath;
 class ULyraAbilitySet;
+class ULyraCombatSet;
 
 UCLASS()
 class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface
@@ -30,6 +31,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 	TObjectPtr<APatrolPath> PatrolPath = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Enemy")
+	TObjectPtr<const ULyraCombatSet> CombatSet = nullptr;
 
 public:
 

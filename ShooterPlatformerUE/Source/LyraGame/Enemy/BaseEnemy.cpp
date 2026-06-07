@@ -6,6 +6,7 @@
 #include "AbilitySystem/LyraAbilitySystemComponent.h"
 #include "AnimationSetUpComponent.h"
 #include "PatrolPath.h"
+#include "AbilitySystem/Attributes/LyraCombatSet.h"
 
 ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -17,6 +18,7 @@ ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AnimationSetUpComponent = ObjectInitializer.CreateDefaultSubobject<UAnimationSetUpComponent>(this, TEXT("AnimationSetUpComponent"));
+	CombatSet = ObjectInitializer.CreateDefaultSubobject<ULyraCombatSet>(this, TEXT("CombatSet"));
 
 	SetNetUpdateFrequency(100.0f);
 }
