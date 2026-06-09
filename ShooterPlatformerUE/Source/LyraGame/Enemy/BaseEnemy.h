@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Teams/LyraTeamAgentInterface.h"
 #include "BaseEnemy.generated.h"
 
 class ULyraAbilitySystemComponent;
@@ -16,7 +17,7 @@ class ULyraAbilitySet;
 class ULyraCombatSet;
 
 UCLASS()
-class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface
+class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface, public ILyraTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -32,6 +33,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 	TObjectPtr<APatrolPath> PatrolPath = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+	int32 TeamID = 5;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	TObjectPtr<const ULyraCombatSet> CombatSet = nullptr;
 
@@ -46,6 +50,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UBehaviorTree* GetBehaviorTree();
 	APatrolPath* GetPatrolPath();

@@ -79,3 +79,8 @@ APatrolPath* ABaseEnemy::GetPatrolPath()
 {
 	return PatrolPath;
 }
+
+FGenericTeamId ABaseEnemy::GetGenericTeamId() const
+{
+	return IntegerToGenericTeamId(TeamID);
+}
