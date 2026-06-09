@@ -140,6 +140,7 @@ void ULyraGameplayAbility_DashAttack::CheckForActorsToDamage(float DeltaTime)
 			}
 
 			FGameplayEffectContextHandle GameplayEffectContext = LASComponent->MakeEffectContext();
+			GameplayEffectContext.AddHitResult(FHitResult(), true);
 			UGameplayEffect* DamageGameplayEffect = DamageGameplayEffectClass->GetDefaultObject<UGameplayEffect>();
 			LASComponent->ApplyGameplayEffectToTarget(DamageGameplayEffect, HitActorAbilitySystemComponent, 1.0, GameplayEffectContext);
 			AlreadyDamagedActors.Add(HitActor);
