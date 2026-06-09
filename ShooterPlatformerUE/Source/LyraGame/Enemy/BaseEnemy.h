@@ -15,6 +15,8 @@ class UAnimationSetUpComponent;
 class APatrolPath;
 class ULyraAbilitySet;
 class ULyraCombatSet;
+class ULyraHealthSet;
+class ULyraHealthComponent;
 
 UCLASS()
 class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface, public ILyraTeamAgentInterface
@@ -39,6 +41,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	TObjectPtr<const ULyraCombatSet> CombatSet = nullptr;
 
+	UPROPERTY(VisibleAnywhere, Category = "Enemy")
+	TObjectPtr<const ULyraHealthSet> HealthSet = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Enemy")
+	TObjectPtr<const ULyraHealthComponent> HealthComponent = nullptr;
+
 public:
 
 	UFUNCTION(BlueprintCallable, Category = "Enemy")
@@ -47,7 +55,6 @@ public:
 	FOnAbilityExecutionFinished OnAbilityExecutionFinished;
 	
 	ABaseEnemy(const FObjectInitializer& ObejectInitializer);
-	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PostInitializeComponents() override;
 	virtual FGenericTeamId GetGenericTeamId() const override;
@@ -57,6 +64,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndplayReason) override;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -64,6 +72,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 	TObjectPtr<ULyraAbilitySet> AbilitySet = nullptr;
+
+	UFUNCTION()
+	void OnHealthChanged(ULyraHealthComponent* SourceHealthComponent, float OldValue, float NewValue, AActor* SourceInstigator);
 
 	virtual void SetStartingAnimationLayer();
 };

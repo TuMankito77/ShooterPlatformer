@@ -7,6 +7,8 @@
 #include "AnimationSetUpComponent.h"
 #include "PatrolPath.h"
 #include "AbilitySystem/Attributes/LyraCombatSet.h"
+#include "Character/LyraHealthComponent.h"
+#include "AbilitySystem/Attributes/LyraHealthSet.h"
 
 ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -19,6 +21,8 @@ ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 
 	AnimationSetUpComponent = ObjectInitializer.CreateDefaultSubobject<UAnimationSetUpComponent>(this, TEXT("AnimationSetUpComponent"));
 	CombatSet = ObjectInitializer.CreateDefaultSubobject<ULyraCombatSet>(this, TEXT("CombatSet"));
+	HealthSet = ObjectInitializer.CreateDefaultSubobject<ULyraHealthSet>(this, TEXT("HealthSet"));
+	HealthComponent = ObjectInitializer.CreateDefaultSubobject<ULyraHealthComponent>(this, TEXT("HealthComponent"));
 
 	SetNetUpdateFrequency(100.0f);
 }
@@ -40,13 +44,13 @@ void ABaseEnemy::PostInitializeComponents()
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//HealthComponent->OnHealthChanged.AddDynamic(this, & ABaseEnemy::OnHealthChanged);
 }
 
-void ABaseEnemy::Tick(float DeltaTime)
+void ABaseEnemy::EndPlay(const EEndPlayReason::Type EndplayReason)
 {
-	Super::Tick(DeltaTime);
-
+	Super::EndPlay(EndplayReason);
+	//HealthComponent->OnHealthChanged.RemoveDynamic(this, &ABaseEnemy::OnHealthChanged);
 }
 
 void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -83,4 +87,9 @@ APatrolPath* ABaseEnemy::GetPatrolPath()
 FGenericTeamId ABaseEnemy::GetGenericTeamId() const
 {
 	return IntegerToGenericTeamId(TeamID);
+}
+
+void ABaseEnemy::OnHealthChanged(ULyraHealthComponent* SourceHealthComponent, float OldValue, float NewValue, AActor* SourceInstigator)
+{
+	
 }
