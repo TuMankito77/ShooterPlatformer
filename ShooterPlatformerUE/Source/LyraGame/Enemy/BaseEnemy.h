@@ -45,7 +45,7 @@ protected:
 	TObjectPtr<const ULyraHealthSet> HealthSet = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
-	TObjectPtr<const ULyraHealthComponent> HealthComponent = nullptr;
+	TObjectPtr<ULyraHealthComponent> HealthComponent = nullptr;
 
 public:
 
