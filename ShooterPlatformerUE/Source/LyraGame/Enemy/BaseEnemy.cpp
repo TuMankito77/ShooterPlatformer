@@ -38,6 +38,7 @@ void ABaseEnemy::PostInitializeComponents()
 		AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
 	}
 
+	HealthComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
 	SetStartingAnimationLayer();
 }
 
