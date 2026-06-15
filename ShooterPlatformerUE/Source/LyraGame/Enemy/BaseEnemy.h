@@ -77,4 +77,6 @@ private:
 	void OnHealthChanged(ULyraHealthComponent* SourceHealthComponent, float OldValue, float NewValue, AActor* SourceInstigator);
 
 	virtual void SetStartingAnimationLayer();
+	void InitializeWidgets();
+	void DeinitializeWidgets();
 };
