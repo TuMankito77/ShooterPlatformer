@@ -13,8 +13,8 @@ class LYRAGAME_API UEnemyWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnInitialize();
+	void OnInitialize(AActor* WidgetOwner);
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnDeinitialize();
+	void OnDeinitialize(AActor* WidgetOwner);
 };

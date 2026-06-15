@@ -109,7 +109,7 @@ void ABaseEnemy::InitializeWidgets()
 		if (IsValid(WidgetComponent->GetWidget()) && WidgetComponent->GetWidget()->IsA<UEnemyWidget>())
 		{
 			UEnemyWidget* EnemyWidget = Cast<UEnemyWidget>(WidgetComponent->GetWidget());
-			EnemyWidget->OnInitialize();
+			EnemyWidget->OnInitialize(this);
 		}
 	}
 }
@@ -124,7 +124,7 @@ void ABaseEnemy::DeinitializeWidgets()
 		if (IsValid(WidgetComponent->GetWidget()) && WidgetComponent->GetWidget()->IsA<UEnemyWidget>())
 		{
 			UEnemyWidget* EnemyWidget = Cast<UEnemyWidget>(WidgetComponent->GetWidget());
-			EnemyWidget->OnDeinitialize();
+			EnemyWidget->OnDeinitialize(this);
 		}
 	}
 }
