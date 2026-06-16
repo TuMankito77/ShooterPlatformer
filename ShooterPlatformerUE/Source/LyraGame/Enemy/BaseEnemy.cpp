@@ -9,8 +9,11 @@
 #include "AbilitySystem/Attributes/LyraCombatSet.h"
 #include "LyraGame/Character/LyraHealthComponent.h"
 #include "AbilitySystem/Attributes/LyraHealthSet.h"
+#include "AbilitySystem/LyraAbilityTagRelationshipMapping.h"
 #include "Components/WidgetComponent.h"
 #include "UI/EnemyWidget.h"
+#include "Abilities/Async/AbilityAsync_WaitGameplayEvent.h"
+#include "Abilities/GameplayAbilityTypes.h"
 
 ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -33,6 +36,7 @@ void ABaseEnemy::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	check(AbilitySystemComponent);
+	AbilitySystemComponent->SetTagRelationshipMapping(TagRelationshipMapping);
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 
 	if (IsValid(AbilitySet))
@@ -47,21 +51,20 @@ void ABaseEnemy::PostInitializeComponents()
 void ABaseEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	HealthComponent->OnHealthChanged.AddDynamic(this, &ABaseEnemy::OnHealthChanged);
+	DeathGameplayEvent = UAbilityAsync_WaitGameplayEvent::WaitGameplayEventToActor(this, DeathGameplayTag, true, true);
+	DeathGameplayEvent->EventReceived.AddDynamic(this, &ABaseEnemy::OnDeathGameplayEvent);
 	InitializeWidgets();
 }
 
 void ABaseEnemy::EndPlay(const EEndPlayReason::Type EndplayReason)
 {
 	Super::EndPlay(EndplayReason);
-	HealthComponent->OnHealthChanged.RemoveDynamic(this, &ABaseEnemy::OnHealthChanged);
 	DeinitializeWidgets();
 }
 
 void ABaseEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 ULyraAbilitySystemComponent* ABaseEnemy::GetLyraAbilitySystemComponent() const
@@ -94,11 +97,6 @@ FGenericTeamId ABaseEnemy::GetGenericTeamId() const
 	return IntegerToGenericTeamId(TeamID);
 }
 
-void ABaseEnemy::OnHealthChanged(ULyraHealthComponent* SourceHealthComponent, float OldValue, float NewValue, AActor* SourceInstigator)
-{
-	UE_LOG(LogTemp, Display, TEXT("Receiving damage."));
-}
-
 void ABaseEnemy::InitializeWidgets()
 {
 	TArray<UWidgetComponent*> WidgetComponents;
@@ -127,4 +125,9 @@ void ABaseEnemy::DeinitializeWidgets()
 			EnemyWidget->OnDeinitialize(this);
 		}
 	}
+}
+
+void ABaseEnemy::OnDeathGameplayEvent(FGameplayEventData Payload)
+{
+	UE_LOG(LogTemp, Display, TEXT("DEATH RECEIVED ON ENEMY!!!"));
 }

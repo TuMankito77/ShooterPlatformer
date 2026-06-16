@@ -17,6 +17,9 @@ class ULyraAbilitySet;
 class ULyraCombatSet;
 class ULyraHealthSet;
 class ULyraHealthComponent;
+class ULyraAbilityTagRelationshipMapping;
+class UAbilityAsync_WaitGameplayEvent;
+struct FGameplayEventData;
 
 UCLASS()
 class LYRAGAME_API ABaseEnemy : public ACharacter, public IAbilitySystemInterface, public ILyraTeamAgentInterface
@@ -38,6 +41,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 	int32 TeamID = 5;
 	
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+	TObjectPtr<ULyraAbilityTagRelationshipMapping> TagRelationshipMapping = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	FGameplayTag DeathGameplayTag = FGameplayTag();
+
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	TObjectPtr<const ULyraCombatSet> CombatSet = nullptr;
 
@@ -73,10 +82,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 	TObjectPtr<ULyraAbilitySet> AbilitySet = nullptr;
 
-	UFUNCTION()
-	void OnHealthChanged(ULyraHealthComponent* SourceHealthComponent, float OldValue, float NewValue, AActor* SourceInstigator);
+	TObjectPtr<UAbilityAsync_WaitGameplayEvent> DeathGameplayEvent = nullptr;
 
 	virtual void SetStartingAnimationLayer();
 	void InitializeWidgets();
 	void DeinitializeWidgets();
+	void OnDeathGameplayEvent(FGameplayEventData Payload);
 };
