@@ -44,7 +44,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Enemy")
 	TObjectPtr<ULyraAbilityTagRelationshipMapping> TagRelationshipMapping = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Enemy")
 	FGameplayTag DeathGameplayTag = FGameplayTag();
 
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
@@ -55,6 +55,16 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Enemy")
 	TObjectPtr<ULyraHealthComponent> HealthComponent = nullptr;
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<ULyraAbilitySystemComponent> AbilitySystemComponent = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Enemy")
+	TObjectPtr<ULyraAbilitySet> AbilitySet = nullptr;
+
+	UPROPERTY()
+	TObjectPtr<UAbilityAsync_WaitGameplayEvent> DeathGameplayEvent = nullptr;
 
 public:
 
@@ -76,16 +86,10 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndplayReason) override;
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<ULyraAbilitySystemComponent> AbilitySystemComponent = nullptr;
-
-	UPROPERTY(EditAnywhere, Category = "Enemy")
-	TObjectPtr<ULyraAbilitySet> AbilitySet = nullptr;
-
-	TObjectPtr<UAbilityAsync_WaitGameplayEvent> DeathGameplayEvent = nullptr;
+	UFUNCTION()
+	void OnDeathGameplayEvent(FGameplayEventData Payload);
 
 	virtual void SetStartingAnimationLayer();
 	void InitializeWidgets();
 	void DeinitializeWidgets();
-	void OnDeathGameplayEvent(FGameplayEventData Payload);
 };

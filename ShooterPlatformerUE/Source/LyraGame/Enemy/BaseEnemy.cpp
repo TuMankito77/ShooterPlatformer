@@ -53,6 +53,10 @@ void ABaseEnemy::BeginPlay()
 	Super::BeginPlay();
 	DeathGameplayEvent = UAbilityAsync_WaitGameplayEvent::WaitGameplayEventToActor(this, DeathGameplayTag, true, true);
 	DeathGameplayEvent->EventReceived.AddDynamic(this, &ABaseEnemy::OnDeathGameplayEvent);
+	//We are casting the event so that it gives us access to the Activate function which is only public in the parent class.
+	//If this is not done and the activate is not called, then the event will never trigger the EventReceived callback. 
+	UBlueprintAsyncActionBase* DeathGameplayEventAsBPAsyncActionBase = Cast<UBlueprintAsyncActionBase>(DeathGameplayEvent);
+	DeathGameplayEventAsBPAsyncActionBase->Activate();
 	InitializeWidgets();
 }
 
@@ -129,5 +133,5 @@ void ABaseEnemy::DeinitializeWidgets()
 
 void ABaseEnemy::OnDeathGameplayEvent(FGameplayEventData Payload)
 {
-	UE_LOG(LogTemp, Display, TEXT("DEATH RECEIVED ON ENEMY!!!"));
+	
 }
