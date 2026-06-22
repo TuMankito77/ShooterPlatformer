@@ -6,6 +6,8 @@
 
 void ULyraGameplayAbility_EnemyDeath::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 	FGameplayCueParameters DeathGameplayCueParams;
 	DeathGameplayCueParams.NormalizedMagnitude = TriggerEventData->EventMagnitude;
 	DeathGameplayCueParams.RawMagnitude = TriggerEventData->EventMagnitude;
@@ -50,6 +52,8 @@ void ULyraGameplayAbility_EnemyDeath::EndAbility(const FGameplayAbilitySpecHandl
 	{
 		GetWorld()->GetTimerManager().ClearTimer(DeathDurationTimer);
 	}
+
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicatedEndAbility, bWasCancelled);
 }
 
 void ULyraGameplayAbility_EnemyDeath::OnDeathDurationTimerCompleted()

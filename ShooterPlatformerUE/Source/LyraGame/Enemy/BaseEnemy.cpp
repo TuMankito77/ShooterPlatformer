@@ -14,6 +14,7 @@
 #include "UI/EnemyWidget.h"
 #include "Abilities/Async/AbilityAsync_WaitGameplayEvent.h"
 #include "Abilities/GameplayAbilityTypes.h"
+#include "AIControllerBaseEnemy.h"
 
 ABaseEnemy::ABaseEnemy(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -57,12 +58,14 @@ void ABaseEnemy::BeginPlay()
 	//If this is not done and the activate is not called, then the event will never trigger the EventReceived callback. 
 	UBlueprintAsyncActionBase* DeathGameplayEventAsBPAsyncActionBase = Cast<UBlueprintAsyncActionBase>(DeathGameplayEvent);
 	DeathGameplayEventAsBPAsyncActionBase->Activate();
+	HealthComponent->OnDeathFinished.AddDynamic(this, &ABaseEnemy::OnDeathFinished);
 	InitializeWidgets();
 }
 
 void ABaseEnemy::EndPlay(const EEndPlayReason::Type EndplayReason)
 {
 	Super::EndPlay(EndplayReason);
+	DeathGameplayEvent->EventReceived.RemoveDynamic(this, &ABaseEnemy::OnDeathGameplayEvent);
 	DeinitializeWidgets();
 }
 
@@ -133,5 +136,12 @@ void ABaseEnemy::DeinitializeWidgets()
 
 void ABaseEnemy::OnDeathGameplayEvent(FGameplayEventData Payload)
 {
-	
+	AAIControllerBaseEnemy*  AIControllerBaseEnemy = Cast<AAIControllerBaseEnemy>(GetController());
+	AIControllerBaseEnemy->BrainComponent->StopLogic(TEXT("Enemy Death"));
+}
+
+void ABaseEnemy::OnDeathFinished(AActor* OwningActor)
+{
+	HealthComponent->OnDeathFinished.RemoveDynamic(this, &ABaseEnemy::OnDeathFinished);
+	Destroy();
 }

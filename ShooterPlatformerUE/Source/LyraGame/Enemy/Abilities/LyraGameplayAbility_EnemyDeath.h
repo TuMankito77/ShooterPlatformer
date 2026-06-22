@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/LyraGameplayAbility.h"
+#include "AbilitySystem/Abilities/LyraGameplayAbility_Death.h"
 #include "LyraGameplayAbility_EnemyDeath.generated.h"
 
 class UAbilityTask_PlayMontageAndWait;
 
 UCLASS()
-class LYRAGAME_API ULyraGameplayAbility_EnemyDeath : public ULyraGameplayAbility
+class LYRAGAME_API ULyraGameplayAbility_EnemyDeath : public ULyraGameplayAbility_Death
 {
 	GENERATED_BODY()
 

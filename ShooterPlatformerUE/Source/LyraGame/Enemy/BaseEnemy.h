@@ -89,6 +89,9 @@ private:
 	UFUNCTION()
 	void OnDeathGameplayEvent(FGameplayEventData Payload);
 
+	UFUNCTION()
+	void OnDeathFinished(AActor* OwningActor);
+
 	virtual void SetStartingAnimationLayer();
 	void InitializeWidgets();
 	void DeinitializeWidgets();
